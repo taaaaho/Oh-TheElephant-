@@ -8,8 +8,8 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>MINT Sandbox App</title>
-        <meta name="description" content="Mint site" />
+        <title>Oh! The Elephant!</title>
+        <meta name="description" content="Oh! The Elephant! Mint site" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
