@@ -27,7 +27,11 @@ export const Metamask: React.FC = () => {
                 You can receive NFT by free
               </Text>
               <Text color="white" fontWeight="semibold">
-                {account}
+                {account &&
+                  `${account.slice(0, 6)}...${account.slice(
+                    account.length - 4,
+                    account.length
+                  )}`}
               </Text>
             </Box>
           ) : (
