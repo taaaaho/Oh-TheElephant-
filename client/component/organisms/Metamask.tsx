@@ -1,44 +1,18 @@
 import { Box, Text } from '@chakra-ui/react'
-import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { MetamaskContext } from '../../context/metamask'
 
 declare var window: any
 
 export const Metamask: React.FC = () => {
   // Metamask connect check
   const [metaMaskFlag, setMetaMaskFlag] = useState(false)
-  const [account, setAccount] = useState(null)
-  const [network, setNetwork] = useState(false)
+  const { account, network } = useContext(MetamaskContext)
 
   useEffect(() => {
     const tmpFlag = window.ethereum && window.ethereum.isMetaMask
     setMetaMaskFlag(tmpFlag)
-
-    connectMetamask()
   }, [])
-
-  const connectMetamask = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-    const network = await provider.getNetwork()
-    if (network.name === process.env.NETWORK) {
-      setNetwork(true)
-    } else {
-      alert(
-        `ネットワークを ${process.env.NETWORK} テストネットワークに切り替えてください`
-      )
-    }
-
-    // for network change event
-    provider.on('network', (newNetwork, oldNetwork) => {
-      if (oldNetwork) {
-        window.location.reload()
-      }
-    })
-
-    // MetaMask requires requesting permission to connect users accounts
-    const accounts = await provider.send('eth_requestAccounts', [])
-    setAccount(accounts[0])
-  }
 
   return (
     <Box>

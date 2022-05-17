@@ -7,7 +7,7 @@
     "deploy:rinkeby": "hardhat run scripts/deploy.ts --network rinkeby",
     "deploy:ropsten": "hardhat run scripts/deploy.ts --network ropsten",
     "verify:rinkeby": "hardhat verify --contract contracts/mint.sol:NFT --network rinkeby Address",
-    "verify:ropsten": "hardhat verify --contract contracts/mint.sol:NFT --network ropsten Address"
+    "verify:ropsten": "hardhat verify --contract contracts/mint.sol:NFT --network ropsten 0x5182BBF65aad49479c812799E010C094130EdD7d"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
