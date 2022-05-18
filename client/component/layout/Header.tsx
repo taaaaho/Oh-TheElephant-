@@ -29,7 +29,11 @@ export const Header: React.FC = () => {
             width="32px"
             alt="oh! the elephant!"
           ></Image>
-          <Text fontWeight="semibold" fontSize="xl" fontFamily="monospace">
+          <Text
+            fontWeight="semibold"
+            fontSize={{ base: 'md', md: 'xl' }}
+            fontFamily="monospace"
+          >
             Oh! The Elephant!
           </Text>
         </HStack>
@@ -42,7 +46,11 @@ export const Header: React.FC = () => {
         py="2"
         onClick={handleConnectClick}
       >
-        <Text fontWeight="semibold" fontSize="md" color="white">
+        <Text
+          fontWeight="semibold"
+          fontSize={{ base: 'sm', md: 'md' }}
+          color="white"
+        >
           {network ? (
             <HStack>
               <Text mr="4">
