@@ -1,5 +1,7 @@
 import { Box, Text } from '@chakra-ui/react'
 import { useCallback, useContext, useEffect, useState } from 'react'
+import { Progress } from '@chakra-ui/react'
+
 import { MetamaskContext } from '../../context/metamask'
 
 declare var window: any
@@ -46,8 +48,13 @@ export const Metamask: React.FC = () => {
                 You can receive NFT by free
               </Text>
               <Text color="gray.800" fontWeight="semibold">
-                Remaining {network ? `${40 - totalSupply} / 40` : '- / -'}
+                Minted {network ? `${totalSupply} / 40` : '- / -'}
               </Text>
+              <Progress
+                mt="4"
+                colorScheme="gray"
+                value={(totalSupply / 40) * 100}
+              />
               {/* <Text color="gray.800" fontWeight="semibold">
                 {account &&
                   `${account.slice(0, 6)}...${account.slice(

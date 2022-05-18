@@ -47,9 +47,9 @@ const Home: NextPage = () => {
           </Box>
           <Flex
             p="4"
-            bg="gray.100"
+            bg="gray.300"
             borderRadius="xl"
-            height="380px"
+            height="300px"
             direction="column"
             justifyContent="space-around"
           >

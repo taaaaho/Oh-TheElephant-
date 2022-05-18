@@ -84,11 +84,12 @@ export const MintButton: React.FC = memo(() => {
   return (
     <VStack>
       <Button
-        colorScheme="purple"
+        colorScheme="black"
         _focus={{ outline: 'none' }}
         onClick={network ? handleMintClick : handleConnectClick}
         isLoading={isLoading}
         disabled={isLoading}
+        isFullWidth
       >
         {network ? 'Mint' : 'Connect Metamast'}
       </Button>
