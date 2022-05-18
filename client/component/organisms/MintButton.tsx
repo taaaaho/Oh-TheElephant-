@@ -1,15 +1,7 @@
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Text, useToast, VStack } from '@chakra-ui/react'
-import { ethers } from 'ethers'
 import { MetamaskContext } from '../../context/metamask'
-import useMetamask, { Metamask } from '../../hooks/useMetamask'
+import useMetamask from '../../hooks/useMetamask'
 
 declare var window: any
 
@@ -17,53 +9,65 @@ declare var window: any
 export const MintButton: React.FC = memo(() => {
   const [isLoading, setIsLoading] = useState(false)
   const [totalSupply, setTotalSupply] = useState(0)
-  const [contract, setContract] = useState<ethers.Contract>()
   const toast = useToast()
 
-  const { provider, network } = useContext(MetamaskContext)
+  const { network, metamask } = useContext(MetamaskContext)
   const { connectMetamask } = useMetamask()
 
   const handleMintClick = async () => {
     await mint()
   }
   const handleConnectClick = async () => {
-    const metamask: Metamask = await connectMetamask()
-    setContract(metamask.contract)
-
-    if (metamask.provider._network.name != process.env.NETWORK) {
-      return
-    }
-    const total = await metamask.contract?.totalSupply()
-    setTotalSupply(total.toNumber())
+    await connectMetamask()
   }
 
   const mint = async () => {
     setIsLoading(true)
 
     try {
-      const res = await contract?.mint()
+      const res = await metamask.contract?.mint()
     } catch (error) {
       setIsLoading(false)
     }
   }
 
+  const fetchTotalSupply = useCallback(async () => {
+    const total = await metamask.contract?.totalSupply()
+    if (total) {
+      setTotalSupply(total.toNumber())
+    }
+  }, [metamask])
+
   useEffect(() => {
-    if (Object.keys(provider).length === 0) {
+    if (metamask && metamask.provider && metamask.provider._network) {
+      if (metamask.provider._network.name != process.env.NETWORK) {
+        return
+      }
+      fetchTotalSupply()
+    }
+  }, [fetchTotalSupply, metamask, metamask.provider])
+
+  useEffect(() => {
+    if (
+      !metamask ||
+      Object.keys(metamask).length === 0 ||
+      Object.keys(metamask.provider).length === 0
+    ) {
       return
     }
 
     // for network change event
-    provider.on('network', (newNetwork, oldNetwork) => {
+    metamask.provider.on('network', (newNetwork, oldNetwork) => {
       if (oldNetwork) {
         window.location.reload()
       }
     })
 
     // Listning Event
-    const filters = contract?.filters['Minted']
+    const filters = metamask.contract?.filters['Minted']
     if (filters !== undefined) {
-      provider.once('block', () => {
-        contract?.on(filters(), (author: string) => {
+      metamask.provider.once('block', () => {
+        metamask.contract?.on(filters(), (author: string) => {
           toast({
             title: 'Mint succeed',
             description: 'Check your NFT',
@@ -75,7 +79,7 @@ export const MintButton: React.FC = memo(() => {
         })
       })
     }
-  }, [contract, provider, toast])
+  }, [metamask, metamask.contract, metamask.provider, toast])
 
   return (
     <VStack>
@@ -88,7 +92,7 @@ export const MintButton: React.FC = memo(() => {
       >
         {network ? 'Mint' : 'Connect Metamast'}
       </Button>
-      <Text color="white" fontWeight="semibold">
+      <Text color="gray.800" fontWeight="semibold">
         Remaining {network ? `${40 - totalSupply} / 40` : '- / -'}
       </Text>
     </VStack>

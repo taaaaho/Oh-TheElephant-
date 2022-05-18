@@ -20,13 +20,13 @@ export const Metamask: React.FC = () => {
         account ? (
           network ? (
             <Box textAlign="center">
-              <Text color="white" fontWeight="semibold">
+              <Text color="gray.800" fontWeight="semibold">
                 This is {process.env.NETWORK} Testnet NFT mint page
               </Text>
-              <Text color="white" fontWeight="semibold">
+              <Text color="gray.800" fontWeight="semibold">
                 You can receive NFT by free
               </Text>
-              <Text color="white" fontWeight="semibold">
+              <Text color="gray.800" fontWeight="semibold">
                 {account &&
                   `${account.slice(0, 6)}...${account.slice(
                     account.length - 4,
@@ -36,18 +36,18 @@ export const Metamask: React.FC = () => {
             </Box>
           ) : (
             <Box>
-              <Text color="white" fontWeight="semibold">
+              <Text color="gray.800" fontWeight="semibold">
                 Please Change {process.env.NETWORK} Test Network
               </Text>
             </Box>
           )
         ) : (
-          <Text color="white" fontWeight="semibold">
+          <Text color="gray.800" fontWeight="semibold">
             Please connect metamask
           </Text>
         )
       ) : (
-        <Text color="white" fontWeight="semibold">
+        <Text color="gray.800" fontWeight="semibold">
           Install Metamask for NFT Mint
         </Text>
       )}
