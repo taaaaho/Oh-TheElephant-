@@ -1,6 +1,16 @@
-import { Box, Center, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import Image from 'next/image'
+import { Header } from '../component/layout/Header'
 import { Metamask } from '../component/organisms/Metamask'
 import { MintButton } from '../component/organisms/MintButton'
 
@@ -13,23 +23,42 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Box
+      {/* <Box
         backgroundImage={'https://source.unsplash.com/random'}
         backgroundPosition="center"
         backgroundSize="cover"
-      >
-        <Center>
-          <VStack
-            bg="rgba(0,0,0,0.3)"
-            h="100vh"
-            w="100vw"
-            justifyContent="center"
+      > */}
+      <Header />
+      <Center>
+        <HStack
+          // bg="rgba(0,0,0,0.3)"
+          bg="white"
+          h="90vh"
+          w="100vw"
+          justifyContent="center"
+        >
+          <Box p="4">
+            <Image
+              src="/gif/1sec.gif"
+              width="370px"
+              height="320px"
+              alt="gif"
+            ></Image>
+          </Box>
+          <Flex
+            p="4"
+            bg="gray.300"
+            borderRadius="xl"
+            height="300px"
+            direction="column"
+            justifyContent="space-around"
           >
             <Metamask />
             <MintButton />
-          </VStack>
-        </Center>
-      </Box>
+          </Flex>
+        </HStack>
+      </Center>
+      {/* </Box> */}
     </>
   )
 }

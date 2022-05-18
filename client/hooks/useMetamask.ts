@@ -15,23 +15,11 @@ export type Metamask = {
 const useMetamask = (): {
   connectMetamask: () => Promise<Metamask>
 } => {
-  const {
-    account,
-    setAccount,
-    network,
-    setNetwork,
-    provider,
-    setProvider,
-    signer,
-    setSigner,
-  } = useContext(MetamaskContext)
+  const { account, setAccount, network, setNetwork, metamask, setMetamask } =
+    useContext(MetamaskContext)
   const connectMetamask = async (): Promise<Metamask> => {
     const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-    setProvider(provider)
-
     const signer = provider.getSigner()
-    setSigner(signer)
-
     const contract = new ethers.Contract(
       process.env.MINT_CONTRACT as string,
       artifact.abi,
@@ -51,6 +39,7 @@ const useMetamask = (): {
     const accounts = await provider.send('eth_requestAccounts', [])
     setAccount(accounts[0])
 
+    setMetamask({ provider, signer, contract })
     return { provider, signer, contract }
   }
   return { connectMetamask }
