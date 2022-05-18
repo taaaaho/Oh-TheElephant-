@@ -8,7 +8,7 @@ declare var window: any
 // eslint-disable-next-line react/display-name
 export const MintButton: React.FC = memo(() => {
   const [isLoading, setIsLoading] = useState(false)
-  const [totalSupply, setTotalSupply] = useState(0)
+  // const [totalSupply, setTotalSupply] = useState(0)
   const toast = useToast()
 
   const { network, metamask } = useContext(MetamaskContext)
@@ -31,21 +31,21 @@ export const MintButton: React.FC = memo(() => {
     }
   }
 
-  const fetchTotalSupply = useCallback(async () => {
-    const total = await metamask.contract?.totalSupply()
-    if (total) {
-      setTotalSupply(total.toNumber())
-    }
-  }, [metamask])
+  // const fetchTotalSupply = useCallback(async () => {
+  //   const total = await metamask.contract?.totalSupply()
+  //   if (total) {
+  //     setTotalSupply(total.toNumber())
+  //   }
+  // }, [metamask])
 
-  useEffect(() => {
-    if (metamask && metamask.provider && metamask.provider._network) {
-      if (metamask.provider._network.name != process.env.NETWORK) {
-        return
-      }
-      fetchTotalSupply()
-    }
-  }, [fetchTotalSupply, metamask, metamask.provider])
+  // useEffect(() => {
+  //   if (metamask && metamask.provider && metamask.provider._network) {
+  //     if (metamask.provider._network.name != process.env.NETWORK) {
+  //       return
+  //     }
+  //     fetchTotalSupply()
+  //   }
+  // }, [fetchTotalSupply, metamask, metamask.provider])
 
   useEffect(() => {
     if (
@@ -92,9 +92,9 @@ export const MintButton: React.FC = memo(() => {
       >
         {network ? 'Mint' : 'Connect Metamast'}
       </Button>
-      <Text color="gray.800" fontWeight="semibold">
+      {/* <Text color="gray.800" fontWeight="semibold">
         Remaining {network ? `${40 - totalSupply} / 40` : '- / -'}
-      </Text>
+      </Text> */}
     </VStack>
   )
 })
