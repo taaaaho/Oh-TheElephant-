@@ -3,7 +3,6 @@ pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-// import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
@@ -12,29 +11,23 @@ contract Sandbox1 is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     address public owner;
-    uint256 collectionSize;
-    uint256 publicSaleStartTime;
-
+    uint256 collectionSize; // token supply はburnで正確な数が取れなくなることがあるため定義
     mapping(address => uint256) public whitelist;
 
     constructor (uint64 publicPrice_, uint256 collectionSize_) ERC721 ("Sandbox1", "ABEKO") {
-        console.log('public price is %s', publicPrice_);
-        console.log('msg, sender is %d', msg.sender);
         owner = msg.sender;
         publicPrice = publicPrice_;
         collectionSize = collectionSize_;
         publicSaleStartTime = 1653215401;
+        _baseTokenURI = "https://gateway.pinata.cloud/ipfs/QmWkBbaGiX56HFAraSsb6WyapJkQLSRMPhmEQaMeEBnnS6/";
     }
 
     // Modifier
     modifier onlyOwner() {
-        console.log('onlyOwner: owner is %d / msg.sender is %d', owner, msg.sender);
         require(owner == msg.sender, 'not a owner');
         _;
     }
     modifier callerIsUser() {
-        console.log('tx.origin is %d', tx.origin);
-        console.log('msg.sender is %d', tx.origin);
         require(tx.origin == msg.sender, "The caller is another contract");
         _;
     }
@@ -44,10 +37,15 @@ contract Sandbox1 is ERC721 {
         address indexed _from, uint256 _tokenId
     );
 
+    // Sale start time
+    uint256 publicSaleStartTime; // UNIX Timestamp  e.g. 1653215401
+    function setPublicSaleStartTime(uint256 publicSaleStartTime_) external onlyOwner {
+        publicSaleStartTime = publicSaleStartTime_;
+    }
+
     // Price 
     uint64 public publicPrice;
     function setPublicPrice(uint64 publicPrice_) external onlyOwner {
-        console.log('block.timestamp: ', block.timestamp);
         publicPrice = publicPrice_;
     }
 
@@ -59,17 +57,12 @@ contract Sandbox1 is ERC721 {
 
     // Metadata URI
     string private _baseTokenURI;
-
     function _baseURI() internal view override returns (string memory) {
         return _baseTokenURI;
     }
-
     function setBaseURI(string calldata baseURI) external onlyOwner {
         _baseTokenURI = baseURI;
     }
-    // function _baseURI() internal view virtual override returns (string memory) {
-    //     return "https://gateway.pinata.cloud/ipfs/QmWkBbaGiX56HFAraSsb6WyapJkQLSRMPhmEQaMeEBnnS6/";
-    // }
 
     // Whitelist
     function seedWhitelist(address[] memory addresses, uint256[] memory numSlots)
@@ -92,7 +85,6 @@ contract Sandbox1 is ERC721 {
             publicSaleStartTime != 0 && block.timestamp >= publicSaleStartTime,
                 "sale has not started yet"
             );
-        require(_tokenIds.current() < 40, 'All NFT Minted');
         require(_tokenIds.current() < collectionSize, "Sold out");
 
         if (isWhitelistPhase) {
@@ -105,6 +97,5 @@ contract Sandbox1 is ERC721 {
         _safeMint(msg.sender, newItemId);
 
         emit Minted(msg.sender, newItemId);
-        // return newItemId;
     }
 }
