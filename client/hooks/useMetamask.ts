@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { useContext, useState } from 'react'
 
 import { MetamaskContext } from '../context/metamask'
-import artifact from '../artifacts/NFT.json'
+import artifact from '../artifacts/Sandbox1.json'
 
 declare var window: any
 

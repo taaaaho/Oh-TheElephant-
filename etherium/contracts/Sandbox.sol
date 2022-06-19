@@ -7,14 +7,47 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
 
-contract Sandbox1 is ERC721 {
+contract Sandbox1 is ERC721Enumerable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     address public owner;
     uint256 collectionSize; // token supply はburnで正確な数が取れなくなることがあるため定義
     mapping(address => uint256) public whitelist;
 
-    constructor (uint64 publicPrice_, uint256 collectionSize_) ERC721 ("Sandbox1", "ABEKO") {
+    // Reveal function
+    bool public revealed = false;
+    string public notRevealedUri = 'https://gateway.pinata.cloud/ipfs/QmTKhdVeutzpQp6kpM8cKYmJt1BL4UqLaGzFNaEXCRuE39';
+
+    function setReveal(bool reveal_) public onlyOwner {
+        revealed = reveal_;
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+
+        if (revealed == false) {
+            return notRevealedUri;
+        }
+
+        return super.tokenURI(tokenId);
+    } 
+    // Reveal function
+
+    constructor (
+        string memory _name,
+        string memory _symbol,
+        uint64 publicPrice_, 
+        uint256 collectionSize_
+    ) ERC721 (_name, _symbol) {
         owner = msg.sender;
         publicPrice = publicPrice_;
         collectionSize = collectionSize_;
@@ -79,13 +112,14 @@ contract Sandbox1 is ERC721 {
     }
 
     // Mint
-    function mint() public callerIsUser onlyOwner {
+    function mint() public payable callerIsUser {
         require(publicPrice != 0, "Public sale has not begun yet");
         require(
             publicSaleStartTime != 0 && block.timestamp >= publicSaleStartTime,
                 "sale has not started yet"
             );
         require(_tokenIds.current() < collectionSize, "Sold out");
+        require(msg.value == publicPrice, "Mint cost is wrong");
 
         if (isWhitelistPhase) {
             require(whitelist[msg.sender] > 0, "not eligible for whitelist mint");
@@ -97,5 +131,19 @@ contract Sandbox1 is ERC721 {
         _safeMint(msg.sender, newItemId);
 
         emit Minted(msg.sender, newItemId);
+    }
+
+    // Withdraw
+    function withdraw() public virtual {
+        // Sub account 0xaa04355323A3bEB161161c281A802575D163E668
+        (bool dao, ) = payable(0xaa04355323A3bEB161161c281A802575D163E668).call{
+            value: (address(this).balance * 30) / 100
+        }("");
+        require(dao);
+
+        // Owner account 0x48064EF45b66F94d4Bd4eDEFE703B8E09D237406
+        (bool team, ) = payable(0x48064EF45b66F94d4Bd4eDEFE703B8E09D237406)
+            .call{value: address(this).balance}("");
+        require(team);
     }
 }
