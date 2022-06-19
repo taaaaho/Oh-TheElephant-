@@ -45,3 +45,11 @@ etherium/build/
 etherium/typechain-types/
 etherium/artifacts/
 etherium/.vercel
+
+# generatar
+generatar/images/
+generatar/metadata/
+
+# error log
+etherium/yarn-error.log
+yarn-error.log

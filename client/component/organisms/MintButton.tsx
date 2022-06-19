@@ -2,6 +2,7 @@ import { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Text, useToast, VStack } from '@chakra-ui/react'
 import { MetamaskContext } from '../../context/metamask'
 import useMetamask from '../../hooks/useMetamask'
+import { ethers } from 'ethers'
 
 declare var window: any
 
@@ -23,10 +24,14 @@ export const MintButton: React.FC = memo(() => {
 
   const mint = async () => {
     setIsLoading(true)
-
+    const options = { value: ethers.utils.parseEther('0.001') }
+    console.log('mint start', metamask.contract)
     try {
-      const res = await metamask.contract?.mint()
+      const res = await metamask.contract?.mint({
+        value: ethers.utils.parseEther('0.001'),
+      })
     } catch (error) {
+      console.log('error', error)
       setIsLoading(false)
     }
   }
